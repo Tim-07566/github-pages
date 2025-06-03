@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appuie sur le bouton d'urgence</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      color: white;
+      font-family: sans-serif;
+      background-image: url('ETLV.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    #gameCanvas {
+      display: block;
+      margin: 0 auto;
+      background: transparent;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #joystick {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      width: 100px;
+      height: 100px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      touch-action: none;
+      z-index: 10;
+    }
+
+    #stick {
+      width: 40px;
+      height: 40px;
+      background: #fff;
+      border-radius: 50%;
+      position: relative;
+      top: 30px;
+      left: 30px;
+    }
+  </style>
+</head>
+<body>
+<canvas id="gameCanvas"></canvas>
+<div id="joystick">
+  <div id="stick"></div>
+</div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+let player = { x: 100, y: 300, size: 30 };
+let velocity = { x: 0, y: 0 };
+let buttonPressed = false;
+let blink = true;
+
+const buttonOffset = 200;
+const button = {
+  x: window.innerWidth - 300,
+  y: window.innerHeight / 2,
+  radius: 30
+};
+
+function drawStickFigure(x, y) {
+  ctx.strokeStyle = 'white';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(x, y - 20, 10, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x, y - 10);
+  ctx.lineTo(x, y + 20);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x - 15, y);
+  ctx.lineTo(x + 15, y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x, y + 20);
+  ctx.lineTo(x - 10, y + 40);
+  ctx.moveTo(x, y + 20);
+  ctx.lineTo(x + 10, y + 40);
+  ctx.stroke();
+}
+
+function drawEmergencyButton() {
+  if (blink || buttonPressed) {
+    ctx.beginPath();
+    ctx.arc(button.x, button.y, button.radius, 0, Math.PI * 2);
+    ctx.fillStyle = buttonPressed ? 'darkred' : 'red';
+    ctx.fill();
+    ctx.strokeStyle = '#550000';
+    ctx.lineWidth = 4;
+    ctx.stroke();
+  }
+}
+
+function drawArrows() {
+  const dx = button.x;
+  const dy = button.y;
+  const arrows = [
+    { x: dx - 150, y: dy },
+    { x: dx + 150, y: dy },
+    { x: dx, y: dy - 150 },
+    { x: dx, y: dy + 150 }
+  ];
+
+  ctx.fillStyle = 'red';
+  arrows.forEach(pos => {
+    const angle = Math.atan2(dy - pos.y, dx - pos.x);
+    ctx.save();
+    ctx.translate(pos.x, pos.y);
+    ctx.rotate(angle + Math.PI);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(-20, -10);
+    ctx.lineTo(-20, -20);
+    ctx.lineTo(-40, 0);
+    ctx.lineTo(-20, 20);
+    ctx.lineTo(-20, 10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  });
+}
+
+setInterval(() => {
+  blink = !blink;
+}, 500);
+
+function update() {
+  player.x += velocity.x;
+  player.y += velocity.y;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawStickFigure(player.x, player.y);
+  drawEmergencyButton();
+  drawArrows();
+
+  let dx = player.x - button.x;
+  let dy = player.y - button.y;
+  let distance = Math.sqrt(dx * dx + dy * dy);
+  if (distance < player.size + button.radius && !buttonPressed) {
+    buttonPressed = true;
+    setTimeout(() => {
+      window.location.href = "C:\Users\Timcr\Documents\ETLV\nouveau 4.html";
+    }, 500);
+  }
+
+  requestAnimationFrame(update);
+}
+
+update();
+
+let joystick = document.getElementById('joystick');
+let stick = document.getElementById('stick');
+let origin = { x: 0, y: 0 };
+let dragging = false;
+
+joystick.addEventListener('touchstart', (e) => {
+  dragging = true;
+  origin.x = e.touches[0].clientX;
+  origin.y = e.touches[0].clientY;
+});
+
+joystick.addEventListener('touchmove', (e) => {
+  if (!dragging) return;
+  e.preventDefault();
+  let dx = e.touches[0].clientX - origin.x;
+  let dy = e.touches[0].clientY - origin.y;
+  let max = 40;
+  dx = Math.max(-max, Math.min(max, dx));
+  dy = Math.max(-max, Math.min(max, dy));
+  stick.style.transform = `translate(${dx}px, ${dy}px)`;
+  velocity.x = dx / 10;
+  velocity.y = dy / 10;
+});
+
+joystick.addEventListener('touchend', () => {
+  dragging = false;
+  stick.style.transform = 'translate(0px, 0px)';
+  velocity.x = 0;
+  velocity.y = 0;
+});
+</script>
+</body>
+</html>
+
