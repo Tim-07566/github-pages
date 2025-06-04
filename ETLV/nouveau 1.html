@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appuie sur le bouton d'urgence</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      color: white;
+      font-family: sans-serif;
+      background-image: url('ETLV.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    #gameCanvas {
+      display: block;
+      margin: 0 auto;
+      background: transparent;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #joystick {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      width: 100px;
+      height: 100px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      touch-action: none;
+      z-index: 10;
+    }
+
+    #stick {
+      width: 40px;
+      height: 40px;
+      background: #fff;
+      border-radius: 50%;
+      position: relative;
+      top: 30px;
+      left: 30px;
+    }
+  </style>
+</head>
+<body>
+<canvas id="gameCanvas"></canvas>
+<div id="joystick">
+  <div id="stick"></div>
+</div>
+
+<script>
+// ... ton script reste inchangé ...
+</script>
+</body>
+</html>

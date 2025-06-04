@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sabotage Message</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-family: Arial, sans-serif;
+      background-color: ;
+      flex-direction: column;
+    }
+
+    #videoBackground {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      z-index: -1;
+    }
+
+    .message {
+      font-size: 3em;
+      color: red;
+      text-align: center;
+      text-shadow: 2px 2px 4px #000000;
+      display: none;
+    }
+
+    .countdown {
+      font-size: 2em;
+      color: white;
+      margin-top: 20px;
+      text-shadow: 1px 1px 2px #000000;
+      display: none;
+    }
+
+    #startBtn {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+      cursor: pointer;
+      color: white;
+      font-size: 2em;
+      text-align: center;
+      padding: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <video autoplay muted loop id="videoBackground">
+    <source src="static1.mp4" type="video/mp4">
+    Votre navigateur ne supporte pas la balise vidéo.
+  </video>
+
+  <button id="startBtn">You win, click here to discover your gift</button>
+
+  <div class="message" id="message">
+    Your phone has just been sabotaged and will soon be reset.
+  </div>
+  <div class="countdown" id="countdown">
+    Reset in 10 seconds...
+  </div>
+
+  <audio id="audio" loop>
+    <source src="son.mp3" type="audio/mpeg">
+    Votre navigateur ne supporte pas la balise audio.
+  </audio>
+
+  <script>
+    const btn = document.getElementById('startBtn');
+    const message = document.getElementById('message');
+    const countdownEl = document.getElementById('countdown');
+    const audio = document.getElementById('audio');
+
+    btn.addEventListener('click', () => {
+      btn.style.display = 'none';
+      message.style.display = 'block';
+      countdownEl.style.display = 'block';
+      audio.play();
+
+      let seconds = 10;
+      const interval = setInterval(() => {
+        seconds--;
+        if (seconds > 0) {
+          countdownEl.textContent = `Reset in ${seconds} seconds...`;
+        } else {
+          countdownEl.textContent = "Resetting now...";
+          clearInterval(interval);
+        }
+      }, 1000);
+    });
+  </script>
+
+</body>
+</html>
